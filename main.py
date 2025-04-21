@@ -1,15 +1,21 @@
 import streamlit as st
 import tensorflow as tf
-from PIL import Image, ImageOps
+import tempfile
 import numpy as np
+from PIL import Image, ImageOps
 
 st.title("Weld Classifier")
 
 # Upload model file
 model_file = st.file_uploader("Upload HDF5 model", type=["h5"])
 if model_file is not None:
-    model = tf.keras.models.load_model(model_file)
-    st.success("Model loaded successfully!")
+    # Save the uploaded model to a temporary file
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".h5") as tmp:
+        tmp.write(model_file.read())
+        tmp_path = tmp.name
+
+    model = tf.keras.models.load_model(tmp_path)
+    st.success("✅ Model loaded successfully!")
 
     # Upload image
     img_file = st.file_uploader("Upload weld image", type=["jpg", "png"])
@@ -29,6 +35,6 @@ if model_file is not None:
             'Burn-through', 'Crack', 'Excess Reinforcement', 'Good Welding',
             'Overlap', 'Porosity', 'Spatters', 'Undercut'
         ]
-        st.success(f"Prediction: {class_names[np.argmax(prediction)]}")
+        st.success(f"🧠 Prediction: {class_names[np.argmax(prediction)]}")
 else:
-    st.warning("Please upload your HDF5 model to proceed.")
+    st.warning("⚠️ Please upload your HDF5 model to proceed.")
