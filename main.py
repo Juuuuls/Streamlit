@@ -8,7 +8,7 @@ st.set_page_config(page_title="Weld Classifier", layout="centered")
 # Load model
 @st.cache_resource
 def load_model():
-    model = tf.keras.models.load_model('weld_classifier.h5')  # Rename based on your actual file
+    model = tf.keras.models.load_model('weld_dataset.h5')  # Rename based on your actual file
     return model
 
 model = load_model()
